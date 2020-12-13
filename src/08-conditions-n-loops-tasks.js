@@ -415,14 +415,12 @@ function isBracketsBalanced(strInput) {
   for (let i = 0; i < strInput.length; i += 1) {
     if (openingBrackets.indexOf(strInput[i]) >= 0) {
       stack.push(strInput[i]);
-      console.log(stack);
     }
     if (closingBrackets.indexOf(strInput[i]) >= 0) {
       const closingBrackIndex = closingBrackets.indexOf(strInput[i]);
       const openingBrackIndex = openingBrackets.indexOf(stack[stack.length - 1]);
       if (closingBrackIndex === openingBrackIndex) {
         stack.pop();
-        console.log(stack);
       } else {
         stack.push(strInput[i]);
         break;
