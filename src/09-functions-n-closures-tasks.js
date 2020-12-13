@@ -165,31 +165,15 @@ function retry(func, attempts) {
  *
  */
 function logger(func, logFunc) {
-  function makeString(array) {
-    const arrayCopy = array.slice();
-    for (let i = 0; i < arrayCopy.length; i += 1) {
-      if (Array.isArray(arrayCopy[i])) {
-        for (let j = 0; j < arrayCopy[i].length; j += 1) {
-          if (typeof arrayCopy[i][j] === 'string') {
-            // eslint-disable-next-line no-useless-escape, prefer-template
-            arrayCopy[i][j] = '\"' + arrayCopy[i][j] + '\"';
-          }
-        }
-        // eslint-disable-next-line prefer-template
-        arrayCopy[i] = '[' + arrayCopy[i].join(',') + ']';
-      }
-    }
-    return arrayCopy;
+  function inner(...args) {
+    const argsString = args.map((element) => JSON.stringify(element));
+    logFunc(`${func.name}(${argsString}) starts`);
+    const result = func(...args);
+    logFunc(`${func.name}(${argsString}) ends`);
+    return result;
   }
 
-  return function inner(...args) {
-    const list = makeString(args).join(',');
-    const startLog = `${func.name}(${list}) starts`;
-    logFunc(startLog);
-    func(...args);
-    const endLog = `${func.name}(${list}) ends`;
-    logFunc(endLog);
-  };
+  return inner;
 }
 
 /**

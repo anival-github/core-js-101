@@ -408,19 +408,29 @@ function getDigitalRoot(num) {
  *   '{[(<{[]}>)]}' = true
  */
 function isBracketsBalanced(strInput) {
-  let str = strInput;
-  const bracketsConfigModified = ['()', '[]', '{}', '<>'];
+  const stack = [];
+  const openingBrackets = ['(', '[', '{', '<'];
+  const closingBrackets = [')', ']', '}', '>'];
 
-  // eslint-disable-next-line no-loop-func
-  while (bracketsConfigModified.some((elem) => str.indexOf(elem) >= 0)) {
-    for (let i = 0; i <= bracketsConfigModified.length - 1; i += 1) {
-      while (str.indexOf(bracketsConfigModified[i]) >= 0) {
-        str = str.replace(bracketsConfigModified[i], '');
+  for (let i = 0; i < strInput.length; i += 1) {
+    if (openingBrackets.indexOf(strInput[i]) >= 0) {
+      stack.push(strInput[i]);
+      console.log(stack);
+    }
+    if (closingBrackets.indexOf(strInput[i]) >= 0) {
+      const closingBrackIndex = closingBrackets.indexOf(strInput[i]);
+      const openingBrackIndex = openingBrackets.indexOf(stack[stack.length - 1]);
+      if (closingBrackIndex === openingBrackIndex) {
+        stack.pop();
+        console.log(stack);
+      } else {
+        stack.push(strInput[i]);
+        break;
       }
     }
   }
 
-  if (str.length === 0) {
+  if (stack.length === 0) {
     return true;
   }
   return false;
@@ -505,11 +515,11 @@ function toNaryString(num, n) {
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
 
-// eslint-disable-next-line consistent-return
 function getCommonDirectoryPath(pathes) {
   let devidedPathes = pathes.slice();
   devidedPathes = devidedPathes.map((element) => element.split('/'));
   let commonPath = '';
+
   for (let i = 0; i < devidedPathes[0].length; i += 1) {
     if (
       devidedPathes.length === 2
@@ -523,9 +533,10 @@ function getCommonDirectoryPath(pathes) {
     ) {
       commonPath = `${commonPath}${devidedPathes[0][i]}/`;
     } else {
-      return commonPath;
+      break;
     }
   }
+  return commonPath;
 }
 
 /**

@@ -94,8 +94,11 @@ function getFastestPromise(array) {
 }
 
 /**
- * Return Promise object that should be resolved with value that is
- * a result of action with values of all the promises that exists in array.
+ * Return Promise object
+ *  that should be resolved with value
+ *    that is a result of action
+ *      with values of all the promises that exists in array.
+ *
  * If some of promise is rejected you should catch it and process the next one.
  *
  * @param {Promise[]} array
@@ -111,8 +114,27 @@ function getFastestPromise(array) {
  *
  */
 function chainPromises(array, action) {
-  return Promise.allSettled(array).then(
+  function promiseAllIterative(values) {
+    return new Promise((resolve, reject) => {
+      const results = [];
+      let completed = 0;
+
+      values.forEach((value, index) => {
+        Promise.resolve(value).then((result) => {
+          results[index] = result;
+          completed += 1;
+
+          if (completed === values.length) {
+            resolve(results);
+          }
+        }).catch((err) => reject(err));
+      });
+    });
+  }
+
+  return promiseAllIterative(array).then(
     (result) => result.reduce(action),
+    (error) => console.log('Ошибка: ', error), // Ошибка: Not Found
   );
 }
 
