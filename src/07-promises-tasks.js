@@ -134,7 +134,7 @@ function chainPromises(array, action) {
 
   return promiseAllIterative(array).then(
     (result) => result.reduce(action),
-    (error) => console.log('Ошибка: ', error), // Ошибка: Not Found
+    (error) => error,
   );
 }
 
